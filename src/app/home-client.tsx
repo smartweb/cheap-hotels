@@ -223,7 +223,7 @@ export function HomeClient() {
 
       {/* —— 城市选择 —— */}
       <Sheet open={cityOpen} onClose={() => setCityOpen(false)} title="选择城市">
-        <div className="p-4 grid grid-cols-2 gap-2.5">
+        <div className="p-4 grid grid-cols-3 gap-2">
           {CITIES.map((c) => {
             const active = c.code === cityCode;
             return (
@@ -233,20 +233,18 @@ export function HomeClient() {
                   setCityCode(c.code);
                   setCityOpen(false);
                 }}
-                className={`btn-press flex flex-col items-start gap-0.5 p-3.5 rounded-md border text-left focus-ring ${
+                className={`btn-press flex items-center justify-center gap-1 h-12 px-2 rounded-md border text-left focus-ring ${
                   active ? "border-ink bg-ink text-canvas" : "border-line bg-canvas text-ink hover:bg-surface"
                 }`}
               >
-                <span className="text-[17px] font-semibold tracking-tightish">{c.name}</span>
-                <span className={`text-[11px] ${active ? "text-canvas/70" : "text-faint"}`}>
-                  {c.short} · {BRANDS.map((b) => b.name).join(" / ")}
-                </span>
+                <span className={`text-[14px] ${active ? "" : "text-faint"}`}>{c.short}</span>
+                <span className="text-[14px] font-medium tracking-tightish">{c.name}</span>
               </button>
             );
           })}
         </div>
         <p className="px-4 pb-5 text-[12px] text-faint leading-relaxed">
-          目前仅支持北上广深，默认深圳。三个品牌均有覆盖。
+          全国 {CITIES.length} 个热门城市，默认深圳。
         </p>
       </Sheet>
 

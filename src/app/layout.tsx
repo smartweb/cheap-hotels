@@ -4,8 +4,8 @@ import { GeistMono } from "geist/font/mono";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "特价品牌酒店 · 北上广深",
-  description: "全季 / 亚朵 / 桔子水晶，300 元内的品质之选。今天就走。",
+  title: "特价品牌酒店 · 全国热门城市",
+  description: "全季 / 亚朵 / 桔子水晶 / 丽枫 / 希尔顿欢朋 / 欢阁，300 元内的品质之选。今天就走。",
 };
 
 export const viewport: Viewport = {

@@ -44,7 +44,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "缺少必要参数：check_in/check_out" }, { status: 400 });
   }
   if (!brandDef) {
-    return NextResponse.json({ ok: false, error: "请选择品牌（全季/亚朵/桔子水晶）" }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, error: `请选择品牌（${BRANDS.map((b) => b.name).join("/")})` },
+      { status: 400 }
+    );
   }
 
   const sortBy: LxHotelSearchRequest["sort_by"] = body.sort_by ?? "price";
@@ -77,10 +80,12 @@ export async function POST(req: NextRequest) {
 
     try {
       const data = await searchHotels(reqBody);
-      // 品牌别名二次过滤，保证只展示目标品牌
+      // 上游已按 hotel_brand 过滤并填充 brand_name；
+      // 这里只做轻量兜底：brand_name 非空且明显不属于本品牌时剔除，
+      // 其余（含空 brand_name）一律保留，避免误删上游有效结果。
       const filtered = (data.hotels ?? []).filter((h) => {
         const b = (h.brand_name ?? "").trim();
-        if (!b) return false;
+        if (!b) return true; // 上游命中但未回填品牌，保留
         return brandDef.aliases.some((a) => b.includes(a));
       });
       if (filtered.length > 0) {
