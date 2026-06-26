@@ -231,7 +231,7 @@ export function HotelClient({ hotelId }: { hotelId: string }) {
                               <div className="flex items-baseline gap-0.5">
                                 <span className="text-[12px] text-tertiary font-semibold">¥</span>
                                 <span className="text-[18px] font-semibold text-ink font-mono">
-                                  {p.price}
+                                  {Math.round(p.price)}
                                 </span>
                               </div>
                               <div className="text-[10px] text-faint mt-0.5">/晚</div>
@@ -262,7 +262,7 @@ export function HotelClient({ hotelId }: { hotelId: string }) {
               <div className="flex items-baseline gap-0.5">
                 <span className="text-[13px] text-tertiary font-semibold">¥</span>
                 <span className="text-[24px] font-semibold text-ink font-mono">
-                  {(selectedDetail.p.price * nightCount).toLocaleString()}
+                  {Math.round(selectedDetail.p.price * nightCount).toLocaleString()}
                 </span>
                 <span className="text-[11px] text-faint">/ {nightCount}晚</span>
               </div>

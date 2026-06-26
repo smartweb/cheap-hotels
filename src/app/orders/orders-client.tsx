@@ -97,7 +97,7 @@ export function OrdersClient() {
                         <>
                           <span className="text-[12px] text-tertiary font-semibold">¥</span>
                           <span className="text-[18px] font-semibold text-ink font-mono">
-                            {o.total_amount.toLocaleString()}
+                            {Math.round(o.total_amount).toLocaleString()}
                           </span>
                         </>
                       )}

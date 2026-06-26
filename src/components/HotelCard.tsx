@@ -89,7 +89,7 @@ export function HotelCard({
               <div className="flex items-baseline gap-0.5">
                 <span className="text-[13px] text-tertiary font-semibold">¥</span>
                 <span className="text-[22px] font-semibold text-ink font-mono tracking-tight">
-                  {hotel.min_price ?? "--"}
+                  {hotel.min_price != null ? Math.round(hotel.min_price) : "--"}
                 </span>
                 <span className="text-[11px] text-faint">/晚</span>
               </div>
