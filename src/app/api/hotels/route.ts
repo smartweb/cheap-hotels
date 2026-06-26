@@ -96,16 +96,17 @@ export async function POST(req: NextRequest) {
       }
       // 当前档位无命中，继续尝试下一档
     } catch (e) {
-      lastErr = e as LxApiError;
-      // 业务错误（参数等）直接返回；网络/鉴权类不继续尝试
       const err = e as LxApiError;
-      if (err.authRelated && err.code !== "network") {
+      // 鉴权/网络类错误（含 IP 白名单拒绝、token 失效、连接被拒）一律直接返回，
+      // 不要继续尝试下一价格档——会掩盖真实错误、给前端返回空结果。
+      if (err.authRelated) {
         return NextResponse.json(
           { ok: false, error: err.message, authRelated: true },
           { status: 502 }
         );
       }
-      // network 类：继续尝试下一档，保留错误
+      // 仅业务类错误（如某档位参数不合法）才保留错误、尝试下一档
+      lastErr = err;
     }
   }
 
