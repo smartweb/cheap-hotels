@@ -29,7 +29,7 @@ export function HotelCard({
 }) {
   const href = `/hotel/${hotel.hotel_id}?so=${encodeURIComponent(
     hotel.search_offer_id
-  )}&ci=${checkIn}&co=${checkOut}`;
+  )}&ci=${checkIn}&co=${checkOut}&pic=${encodeURIComponent(hotel.main_picture ?? "")}`;
 
   return (
     <Link href={href} className="block btn-press">

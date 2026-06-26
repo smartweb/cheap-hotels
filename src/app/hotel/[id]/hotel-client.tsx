@@ -40,6 +40,7 @@ export function HotelClient({ hotelId }: { hotelId: string }) {
   const searchOfferId = sp.get("so") ?? "";
   const checkIn = sp.get("ci") ?? "";
   const checkOut = sp.get("co") ?? "";
+  const pic = sp.get("pic") ?? "";
 
   const [data, setData] = useState<LxHotelRoomsResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -114,13 +115,16 @@ export function HotelClient({ hotelId }: { hotelId: string }) {
 
   return (
     <main className="pb-[96px] min-h-screen">
-      {/* —— 顶部封面 + 返回 —— */}
+      {/* —— 顶部酒店封面 + 返回 —— */}
       <div className="relative aspect-[16/11] bg-surface">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={FALLBACK_IMG}
-          alt=""
-          className="w-full h-full object-cover"
+          src={pic || FALLBACK_IMG}
+          alt={data?.hotel_name ?? "酒店图片"}
+          className="w-full h-full object-cover img-fade"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = FALLBACK_IMG;
+          }}
         />
         <button
           onClick={() => router.back()}
