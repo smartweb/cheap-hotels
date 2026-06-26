@@ -167,7 +167,8 @@ export function CheckoutClient() {
                   </button>
                 )}
               </div>
-              <div className="flex gap-2">
+              <div className="flex items-center gap-3">
+                <label className="w-16 text-[13px] text-sub shrink-0">证件类型</label>
                 <select
                   value={g.id_type}
                   onChange={(e) => {
@@ -175,11 +176,14 @@ export function CheckoutClient() {
                     next[i] = { ...g, id_type: e.target.value };
                     setGuests(next);
                   }}
-                  className="checkout-input w-28 shrink-0"
+                  className="checkout-input flex-1"
                 >
                   <option value="ID_CARD">身份证</option>
                   <option value="PASSPORT">护照</option>
                 </select>
+              </div>
+              <div className="flex items-center gap-3">
+                <label className="w-16 text-[13px] text-sub shrink-0">证件号</label>
                 <input
                   value={g.id_number}
                   onChange={(e) => {
@@ -187,7 +191,7 @@ export function CheckoutClient() {
                     next[i] = { ...g, id_number: e.target.value };
                     setGuests(next);
                   }}
-                  placeholder="证件号（选填）"
+                  placeholder="请输入证件号"
                   className="checkout-input flex-1 font-mono"
                 />
               </div>
