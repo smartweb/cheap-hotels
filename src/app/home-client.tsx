@@ -233,11 +233,10 @@ export function HomeClient() {
                   setCityCode(c.code);
                   setCityOpen(false);
                 }}
-                className={`btn-press flex items-center justify-center gap-1 h-12 px-2 rounded-md border text-left focus-ring ${
+                className={`btn-press flex items-center justify-center h-12 px-2 rounded-md border text-left focus-ring ${
                   active ? "border-ink bg-ink text-canvas" : "border-line bg-canvas text-ink hover:bg-surface"
                 }`}
               >
-                <span className={`text-[14px] ${active ? "" : "text-faint"}`}>{c.short}</span>
                 <span className="text-[14px] font-medium tracking-tightish">{c.name}</span>
               </button>
             );
