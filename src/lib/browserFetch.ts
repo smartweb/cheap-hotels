@@ -15,11 +15,13 @@ export async function api<T>(
   body?: unknown,
   init?: RequestInit
 ): Promise<ApiResult<T>> {
+  // GET 请求不带 body / Content-Type；其余默认 POST + JSON
+  const isGet = init?.method === "GET";
   try {
     const res = await fetch(path, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: body ? JSON.stringify(body) : undefined,
+      headers: isGet ? {} : { "Content-Type": "application/json" },
+      body: isGet ? undefined : body ? JSON.stringify(body) : undefined,
       ...init,
     });
     const json = (await res.json()) as ApiResult<T>;

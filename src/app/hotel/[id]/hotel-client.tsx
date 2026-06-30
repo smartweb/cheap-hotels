@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/browserFetch";
 import { nights, prettyDate } from "@/lib/catalog";
-import type { LxHotelRoomsResponse, LxRoomProduct, LxRoomType } from "@/lib/lx/types";
+import type { LxHotelDetail, LxHotelRoomsResponse, LxRoomProduct, LxRoomType } from "@/lib/lx/types";
 import {
   EmptyState,
   ErrorBanner,
@@ -41,8 +41,12 @@ export function HotelClient({ hotelId }: { hotelId: string }) {
   const checkIn = sp.get("ci") ?? "";
   const checkOut = sp.get("co") ?? "";
   const pic = sp.get("pic") ?? "";
+  const hotelName = sp.get("hn") ?? "";
+  const brand = sp.get("br") ?? "";
+  const cityName = sp.get("ct") ?? "";
 
   const [data, setData] = useState<LxHotelRoomsResponse | null>(null);
+  const [hotel, setHotel] = useState<LxHotelDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<{ msg: string; auth?: boolean } | null>(null);
   const [selectedOffer, setSelectedOffer] = useState<{
@@ -59,11 +63,16 @@ export function HotelClient({ hotelId }: { hotelId: string }) {
       return;
     }
     setLoading(true);
-    const r = await api<LxHotelRoomsResponse>("/api/rooms", { search_offer_id: searchOfferId });
+    // 并发加载房型与酒店详情；酒店详情失败不影响房型展示
+    const [roomRes, hotelRes] = await Promise.all([
+      api<LxHotelRoomsResponse>("/api/rooms", { search_offer_id: searchOfferId }),
+      api<LxHotelDetail>(`/api/hotel/${encodeURIComponent(hotelId)}`, undefined, { method: "GET" }),
+    ]);
     setLoading(false);
-    if (r.ok && r.data) setData(r.data);
-    else setError({ msg: r.error ?? "加载房型失败", auth: r.authRelated });
-  }, [searchOfferId]);
+    if (roomRes.ok && roomRes.data) setData(roomRes.data);
+    else setError({ msg: roomRes.error ?? "加载房型失败", auth: roomRes.authRelated });
+    if (hotelRes.ok && hotelRes.data) setHotel(hotelRes.data);
+  }, [searchOfferId, hotelId]);
 
   useEffect(() => {
     load();
@@ -109,6 +118,9 @@ export function HotelClient({ hotelId }: { hotelId: string }) {
       oid: selectedDetail.p.offer_id,
       rn: selectedDetail.room.room_name,
       rt: selectedDetail.room.room_type_id,
+      hn: hotelName,
+      br: brand,
+      ct: cityName,
     });
     router.push(`/checkout?${q.toString()}`);
   };
@@ -137,15 +149,48 @@ export function HotelClient({ hotelId }: { hotelId: string }) {
 
       <div className="px-4 -mt-6 relative">
         <div className="bg-canvas rounded-lg border border-line shadow-card p-4">
+          {hotel?.brand_name && (
+            <div className="mb-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-sm bg-surface text-[11px] font-semibold text-ink">
+              {hotel.brand_name}
+            </div>
+          )}
           <h1 className="text-[19px] font-semibold tracking-tightish text-ink leading-snug">
-            {data?.hotel_name ?? "酒店详情"}
+            {data?.hotel_name ?? hotel?.hotel_name ?? hotelName ?? "酒店详情"}
           </h1>
-          <div className="mt-1.5 flex items-center gap-2 text-[12px] text-sub">
-            <ScorePill />
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12px] text-sub">
+            <ScorePill score={hotel?.review_score} />
+            {hotel?.star_tag && <span className="text-faint">{hotel.star_tag}</span>}
             <span className="text-faint">
               {checkIn && checkOut ? `${prettyDate(checkIn)} → ${prettyDate(checkOut)} · ${nightCount}晚` : ""}
             </span>
           </div>
+
+          {/* 地址 */}
+          {hotel?.address && (
+            <div className="mt-2.5 flex items-start gap-1.5 text-[12px] text-sub leading-relaxed">
+              <span className="text-tertiary shrink-0">📍</span>
+              <span>
+                {hotel.address}
+                {(hotel.business_zone || hotel.district) && (
+                  <span className="text-faint">
+                    {" "}- {hotel.business_zone || hotel.district}
+                  </span>
+                )}
+              </span>
+            </div>
+          )}
+
+          {/* 设施标签 */}
+          {hotel && (
+            <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[11px]">
+              {hotel.has_wifi && <span className="tag">WiFi</span>}
+              {hotel.has_parking && <span className="tag">停车</span>}
+              {hotel.has_breakfast && <span className="tag">含早</span>}
+              {hotel.has_gymnasium && <span className="tag">健身</span>}
+              {hotel.has_swimming_pool && <span className="tag">泳池</span>}
+              {hotel.has_restaurant && <span className="tag">餐厅</span>}
+            </div>
+          )}
         </div>
       </div>
 

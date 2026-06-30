@@ -211,7 +211,7 @@ export function HomeClient() {
           <div className="space-y-3">
             {data.hotels.map((h) => (
               <div key={h.hotel_id} className="fade-up">
-                <HotelCard hotel={h} checkIn={checkIn} checkOut={checkOut} />
+                <HotelCard hotel={h} checkIn={checkIn} checkOut={checkOut} cityName={city.name} />
               </div>
             ))}
             <p className="text-center text-[12px] text-faint py-4">

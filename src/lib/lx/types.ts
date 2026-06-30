@@ -99,6 +99,41 @@ export interface LxHotelSearchResponse {
 }
 
 /* ------------------------------------------------------------------ */
+/* 酒店 详情                                                            */
+/* ------------------------------------------------------------------ */
+/**
+ * 龙虾 — 酒店详情
+ * 路径：GET /open/v1/hotel/{hotel_id}
+ * 字段比搜索结果更全（含 address / 完整设施等），用于详情页信息卡。
+ */
+export interface LxHotelDetail {
+  hotel_id: string;
+  hotel_name: string;
+  hotel_name_en?: string;
+  brand_name?: string;
+  city?: string;
+  district?: string;
+  business_zone?: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+  star_rating?: number;
+  star_tag?: string;
+  review_score?: number;
+  review_count?: number;
+  main_picture?: string;
+  has_wifi?: boolean;
+  has_parking?: boolean;
+  has_swimming_pool?: boolean;
+  has_breakfast?: boolean;
+  has_child_facility?: boolean;
+  has_gymnasium?: boolean;
+  has_restaurant?: boolean;
+  min_price?: number;
+  currency?: string;
+}
+
+/* ------------------------------------------------------------------ */
 /* 酒店 房型/产品                                                       */
 /* ------------------------------------------------------------------ */
 export interface LxRoomType {
@@ -213,4 +248,41 @@ export interface LxHotelOrderPayResponse {
   pay_type?: string;
   /** 支付参数（按 pay_type 不同返回不同字段，如 h5_url / code_url / prepay 等） */
   pay_params?: Record<string, string>;
+}
+
+/* ------------------------------------------------------------------ */
+/* 酒店 订单详情（状态回查）                                            */
+/* ------------------------------------------------------------------ */
+export type LxOrderStatus =
+  | "pending_payment"
+  | "confirmed"
+  | "cancelled"
+  | "rejected"
+  | "finished"
+  | "no_show";
+
+/** 订单支付状态：unpaid/paid/refunded */
+export type LxPayStatus = "unpaid" | "paid" | "refunded";
+
+/**
+ * 龙虾 — 酒店订单详情
+ * 路径：GET /open/v1/hotel/order/detail/{order_no}
+ * 用于「我的订单」支付后回查真实状态、确认号、酒店名等。
+ */
+export interface LxHotelOrderDetail {
+  order_no?: string;
+  out_trade_no?: string;
+  status?: LxOrderStatus | string;
+  pay_status?: LxPayStatus | string;
+  confirmation_no?: string;
+  hotel_name?: string;
+  hotel_address?: string;
+  room_name?: string;
+  total_amount?: number;
+  currency?: string;
+  check_in?: string;
+  check_out?: string;
+  paid_at?: string;
+  cancelled_at?: string;
+  expires_at?: string;
 }

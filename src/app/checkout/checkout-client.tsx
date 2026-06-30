@@ -22,6 +22,9 @@ export function CheckoutClient() {
   const checkOut = sp.get("co") ?? "";
   const offerId = sp.get("oid") ?? "";
   const roomName = sp.get("rn") ?? "酒店房型";
+  const hotelName = sp.get("hn") ?? "";
+  const brand = sp.get("br") ?? "";
+  const cityName = sp.get("ct") ?? "";
 
   const nightCount = nights(checkIn, checkOut);
 
@@ -68,6 +71,9 @@ export function CheckoutClient() {
     saveOrder({
       out_trade_no,
       order_no: r.data.order_no,
+      hotel_name: r.data.hotel_name || hotelName,
+      brand,
+      city: cityName,
       room_name: roomName,
       check_in: checkIn,
       check_out: checkOut,

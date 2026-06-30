@@ -3,8 +3,10 @@
  */
 import { callApi } from "./client";
 import type {
+  LxHotelDetail,
   LxHotelOrderCreateRequest,
   LxHotelOrderCreateResponse,
+  LxHotelOrderDetail,
   LxHotelOrderPayRequest,
   LxHotelOrderPayResponse,
   LxHotelRoomsResponse,
@@ -16,6 +18,13 @@ export function searchHotels(req: LxHotelSearchRequest) {
   return callApi<LxHotelSearchResponse>("/open/v1/hotel/search", {
     method: "POST",
     body: req,
+  });
+}
+
+/** 查询酒店详情（地址 / 设施 / 星级 / 评分等） */
+export function getHotelDetail(hotel_id: string) {
+  return callApi<LxHotelDetail>(`/open/v1/hotel/${encodeURIComponent(hotel_id)}`, {
+    method: "GET",
   });
 }
 
@@ -40,4 +49,12 @@ export function payHotelOrder(req: LxHotelOrderPayRequest) {
     method: "POST",
     body: req,
   });
+}
+
+/** 查询订单详情（状态回查 / 确认号 / 酒店名） */
+export function getHotelOrderDetail(order_no: string) {
+  return callApi<LxHotelOrderDetail>(
+    `/open/v1/hotel/order/detail/${encodeURIComponent(order_no)}`,
+    { method: "GET" }
+  );
 }

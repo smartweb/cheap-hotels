@@ -22,14 +22,23 @@ export function HotelCard({
   hotel,
   checkIn,
   checkOut,
+  cityName,
 }: {
   hotel: LxHotelItem;
   checkIn: string;
   checkOut: string;
+  cityName?: string;
 }) {
-  const href = `/hotel/${hotel.hotel_id}?so=${encodeURIComponent(
-    hotel.search_offer_id
-  )}&ci=${checkIn}&co=${checkOut}&pic=${encodeURIComponent(hotel.main_picture ?? "")}`;
+  const params = new URLSearchParams({
+    so: hotel.search_offer_id,
+    ci: checkIn,
+    co: checkOut,
+    pic: hotel.main_picture ?? "",
+    hn: hotel.hotel_name,
+    br: hotel.brand_name ?? "",
+    ct: cityName ?? "",
+  });
+  const href = `/hotel/${hotel.hotel_id}?${params.toString()}`;
 
   return (
     <Link href={href} className="block btn-press">
